@@ -1,0 +1,82 @@
+﻿@model ajax_mvc_example.Models.tbluser
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<h2>Ajax jQuery ADD / View</h2>
+
+ 
+ <form id="myform" enctype="multipart/form-data">
+     @Html.TextBoxFor(m => m.name, new { @class = "form-control col-lg-4" })
+
+     @Html.TextBoxFor(m => m.pass, new { @class = "form-control col-lg-4" })
+
+     <input type="button" id="btnadd" value="submit" class="btn btn-primary" />
+     <input type="button" id="btnview" value="view" class="btn btn-warning" />
+
+ </form>
+   
+
+<table class="table" style="display:none" id="mytable">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Password</th>
+    </tr>
+</table>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnadd").click(function () {
+
+            
+          //  var d = $("#myform").serialize();
+
+            var name = $("#name").val();
+            var pass = $("#pass").val();
+
+            var record = new FormData();
+            record.append("name", name);
+            record.append("pass", pass);
+
+
+            $.ajax({
+                type: "post",
+                url: "/Home/AddStudent/", //key value
+               // contentType: "application/json",
+                //data: JSON.stringify({ name: name, pass: pass }),
+                data: record,
+                contentType: false,
+                processData: false,
+               
+                success: function (response) {
+                    alert('record inserted');
+                },
+                error: function () {
+                    alert('error');
+                }
+
+            })
+        })
+      
+
+
+        $("#btnview").click(function () {
+            $("#mytable").css('display', 'block');
+            $("#mytable").empty();
+            $.getJSON("/Home/GetDetail/", function (data) {
+
+                $.each(data, function (key,val) {
+                    $("<tr><td>" + val.userid + "</td><td>" + val.name + "</td><td>" + val.pass + "</td></tr>").appendTo($("#mytable"));
+                })
+
+            })
+        })
+    })
+
+
+</script>
